@@ -1,7 +1,28 @@
-# Domain
+# Domain Map
 
-- 项目：Yu Picture
-- 定位：面向个人与团队的图片管理系统，提供公共图库、私有空间、团队协作、检索与智能图片能力。
-- 模块：yu-picture-backend/ 后端 · yu-picture-backend-ddd/ DDD · yu-picture-frontend/ 前端
-- 技术：Java · Spring Boot · Vue 3 · TypeScript · MySQL · Redis
+## 产品目标
 
+支持公共图库、私有空间和团队协作的智能图片资产平台。
+
+## 代码所有权
+
+| 范围 | 职责 |
+|---|---|
+| `yu-picture-backend/` | 经典分层后端 |
+| `yu-picture-backend-ddd/` | DDD 后端 |
+| `yu-picture-frontend/` | 前端 |
+
+## 主链路
+
+`上传/抓取图片 → 校验与存储 → 元数据处理 → 搜索/分类 → 空间权限 → 团队协作`
+
+## 不变量
+
+- 身份标识使用 `threetwoa`；上游名称仅用于来源说明。
+- 业务入口不得绕过权限、校验、协议或持久化边界。
+- 外部服务失败必须有显式错误或保守降级，不能伪造成功。
+- 配置与凭据分离，仓库只保留安全示例。
+
+## 已知风险
+
+经典分层与 DDD 双实现不可交叉引用；对象存储删除要考虑数据库一致性；空间权限和批量查询需避免越权与 N+1。

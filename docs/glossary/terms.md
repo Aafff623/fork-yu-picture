@@ -3,7 +3,7 @@
 | 术语 | 含义 |
 |---|---|
 | Origin | `Aafff623/fork-yu-picture`，当前二开远程仓库 |
-| Upstream | 原始项目远程，仅用于同步来源与历史 |
+| Upstream | 原作者李鱼皮（liyupi）的原始项目远程，用于同步来源、历史与许可证信息 |
 | Product root | yu-picture-backend/ 经典分层后端；yu-picture-backend-ddd/ DDD 后端；yu-picture-frontend/ 前端 |
 | Main flow | 上传/抓取图片 → 校验与存储 → 元数据处理 → 搜索/分类 → 空间权限 → 团队协作 |
 | Handoff | 实施前后的任务合同，记录范围、验证、风险和回滚 |

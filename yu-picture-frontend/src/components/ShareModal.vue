@@ -6,7 +6,6 @@
         {{ link }}
       </a-typography-link>
       <div style="margin-bottom: 16px" />
-      <h4>手机扫码查看</h4>
       <a-qrcode :value="link" />
     </a-modal>
   </div>

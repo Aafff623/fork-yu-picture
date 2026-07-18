@@ -4,69 +4,77 @@
 
 # Yu Picture
 
-### 智能协作云图库与图片素材平台
+### 面向个人与团队的智能图片资产平台
 
-面向个人与团队的图片管理系统，提供公共图库、私有空间、团队协作、检索与智能图片能力。
+公共图库、私有空间、团队协作、内容审核与智能图片处理的一体化实现。
 
-[核心能力](#核心能力) · [快速开始](#快速开始) · [工程地图](#工程地图) · [参与贡献](#参与贡献)
+[能力](#能力矩阵) · [快速开始](#快速开始) · [架构](#架构与边界) · [阅读顺序](#模块阅读顺序) · [维护](#维护与许可)
 
 </div>
 
 > [!NOTE]
-> 这是基于 [liyupi/yu-picture](https://github.com/liyupi/yu-picture) 的学习增强仓库。项目版权与原始业务代码归原作者及贡献者所有；本仓主要补充工程化文档、README 导航和视觉资产。
+> 本仓库由 **threetwoa** 基于 [liyupi/yu-picture](https://github.com/liyupi/yu-picture) 开展二次开发。上游链接与许可证保留用于追溯来源；当前代码命名空间、维护文档和工程身份已迁移至 `threetwoa`。
 
-## 为什么值得关注
+## 产品边界
 
-- 可运行的真实工程：包含业务界面、服务或基础设施的完整实现。
-- 清晰的学习主线：先理解产品能力，再沿工程地图进入关键模块。
-- 可持续同步上游：upstream 指向原仓库，origin 指向本增强仓库。
-- 面向贡献者：已补齐 Agent 协作、上下文、交付与决策记录骨架。
+Yu Picture 管理图片从上传、解析、存储、检索到协作使用的完整生命周期。它负责业务权限、空间额度、图片元数据和处理任务编排；对象存储、数据库、缓存以及外部 AI 服务仍由各自基础设施提供，不应在仓库中提交真实密钥。
 
-## 核心能力
+## 能力矩阵
 
-| 维度 | 内容 |
-|---|---|
-| 产品定位 | 智能协作云图库与图片素材平台 |
-| 工程实现 | Java · Spring Boot · Vue 3 · TypeScript · MySQL · Redis |
-| 源码导航 | yu-picture-backend/ 后端 · yu-picture-backend-ddd/ DDD · yu-picture-frontend/ 前端 |
+| 能力 | 主要职责 | 实现入口 |
+|---|---|---|
+| 图片资产 | 上传、批量导入、编辑、删除、检索与审核 | `PictureController` / `PictureApplicationService` |
+| 空间管理 | 私有空间、团队空间、容量与配额约束 | `SpaceService` / 空间领域服务 |
+| 团队协作 | 成员、角色与图片操作权限 | DDD 权限领域与接口层 |
+| 智能处理 | 扩图、颜色检索等异步能力 | 基础设施 API 与图片领域服务 |
+| 双后端参考 | 传统分层与 DDD 两种实现可对照阅读 | `yu-picture-backend*` |
 
 ## 快速开始
 
 ```bash
 git clone https://github.com/Aafff623/fork-yu-picture.git
-cd fork-yu-picture
-cd yu-picture-backend
+cd fork-yu-picture/yu-picture-backend
+mvn clean test
 mvn spring-boot:run
 ```
 
-> 启动前请检查配置与环境变量示例。数据库、对象存储、模型服务或第三方平台密钥必须使用本地环境变量。
-
-## 工程地图
-
-| 入口 | 用途 |
-|---|---|
-| CONTEXT.md | 项目边界、读码顺序与关键术语 |
-| AGENTS.md | Agent / 贡献者协作约定 |
-| docs/agents/domain.md | 领域与模块说明 |
-| docs/output/prd/readme-diagrams/ | README 视觉契约 |
-| preview-readme.html | 本地 README 预览壳 |
-
-## 上游同步
+前端：
 
 ```bash
-git fetch upstream
-git checkout master
-git merge upstream/master
-git push origin master
+cd yu-picture-frontend
+npm install
+npm run dev
 ```
 
-## 参与贡献
+启动前配置 MySQL、Redis、对象存储等本地参数。生产凭据必须通过环境变量或密钥管理服务注入。
 
-1. 从 master 创建短生命周期分支。
-2. 一次提交只解决一个主题。
-3. 功能变更先写 Issue / PRD；缺陷附复现与验证结果。
-4. 提交前运行受影响模块的测试、构建或静态检查。
+## 架构与边界
 
-## 致谢与许可
+```text
+Vue Web → Interfaces / Controller → Application Service
+         → Domain Service → Repository / Mapper
+         → Object Storage · Redis · MySQL · External AI API
+```
 
-感谢 [程序员鱼皮](https://github.com/liyupi) 与所有上游贡献者。许可证以仓库中的 LICENSE 及上游声明为准。
+DDD 版本中，接口层只处理协议与身份上下文；应用层编排用例；领域层维护图片、空间和权限规则；基础设施层封装数据库、缓存、对象存储及第三方 API。跨层调用应沿上述方向进行，避免领域对象依赖 Web 或 SDK 细节。
+
+## 模块阅读顺序
+
+| 顺序 | 模块 | 关注点 |
+|---:|---|---|
+| 1 | `yu-picture-frontend` | 页面路由、请求模型和用户操作链路 |
+| 2 | `yu-picture-backend-ddd/interfaces` | HTTP 接口、请求校验与响应转换 |
+| 3 | `application` | 上传、审核、删除、智能处理等用例编排 |
+| 4 | `domain` | 图片、空间、用户及权限的核心规则 |
+| 5 | `infrastructure` | Mapper、存储、缓存与外部服务适配 |
+| 6 | `yu-picture-backend` | 与传统分层实现对照 |
+
+## 验证与贡献
+
+变更后至少运行受影响后端的 `mvn test` 与前端构建。功能调整应附边界说明和测试；配置变更不得包含真实账号、密钥或个人数据。
+
+## 维护与许可
+
+- 维护者：**threetwoa**
+- 上游来源：[liyupi/yu-picture](https://github.com/liyupi/yu-picture)
+- 许可证：以仓库内 `LICENSE` 与上游版权声明为准

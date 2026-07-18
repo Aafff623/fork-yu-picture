@@ -54,7 +54,7 @@ spring:
             type: CLASS_BASED
             props:
               strategy: standard
-              algorithmClassName: com.yupi.yupicture.shared.sharding.PictureShardingAlgorithm
+              algorithmClassName: com.threetwoa.yupicture.shared.sharding.PictureShardingAlgorithm
     props:
       sql-show: true
 mybatis-plus:
@@ -79,7 +79,7 @@ knife4j:
       default:
         api-rule: package
         api-rule-resources:
-          - com.yupi.yupicture.interfaces.controller
+          - com.threetwoa.yupicture.interfaces.controller
 ## 对象存储配置（需要从腾讯云获取）
 #cos:
 #  client:
